@@ -13,12 +13,13 @@ function setup() {
   windowHeight = window.innerHeight;
   windowWidth = window.innerWidth;
   bgColor = color(22,22,24);
+  frameRate(10);
 
   createCanvas(windowWidth,windowHeight);
   background(bgColor);
 
-  player1 = new player(color(0,230,255), windowWidth / 3, windowHeight / 2, defaultLength);
-  player2 = new player(color(0,230,255), (windowWidth / 3) * 2, windowHeight / 2, defaultLength);
+  player1 = new player(color(0,230,255), windowWidth / 3, windowHeight / 2, defaultLength, defaultDirection);
+  player2 = new player(color(0,230,255), (windowWidth / 3) * 2, windowHeight / 2, defaultLength, defaultDirection);
 }
 
 function draw() {
@@ -37,7 +38,8 @@ function player(color, xPos, yPos, length, direction) {
   // 2 down
   // 3 left
 
-  this.direction = 0;
+  this.direction = direction;
+  this.length = length;
 
   this.xPos = xPos;
   this.yPos = yPos;
@@ -49,15 +51,19 @@ function player(color, xPos, yPos, length, direction) {
 
   this.thickness = 5;
 
-  stroke(color);
-  fill(color);
-  rect(xPos,yPos, 5, 5);
+  this.tail = [];
+
+  //stroke(color);
+  //fill(color);
+  //rect(xPos,yPos, 5, 5);
+  for(var i = 0; i < this.length; i++) {
+    this.tail.push(createVector(this.xPos, this.yPos));
+  }
 
   this.changeDirection = function(addedDirection) {
     this.direction += addedDirection;
     if(this.direction > 3) this.direction = 0;
     if(this.direction < 0) this.direction = 3;
-    console.log("Moving: " + this.direction);
   }
 
   this.move = function() {
@@ -82,13 +88,20 @@ function player(color, xPos, yPos, length, direction) {
         this.xSpeed = 0;
         this.ySpeed = 0;
     }
-    this.xPos += this.xSpeed;
-    this.yPos += this.ySpeed;
+    this.xPos += this.xSpeed * this.thickness;
+    this.yPos += this.ySpeed * this.thickness;
   }
   this.show = function() {
+    for(var i = 0; i < this.tail.length; i++) {
+      this.tail[i] = this.tail[i+1];
+    }
+    this.tail[this.tail.length-1] = createVector(this.xPos, this.yPos);
+
     stroke(this.color);
     fill(this.color);
-    rect(this.xPos, this.yPos, this.thickness, this.thickness);
+    for(var i = 0; i < this.tail.length; i++) {
+      rect(this.tail[i].x, this.tail[i].y, this.thickness, this.thickness);
+    }
   }
 }
 
@@ -96,10 +109,8 @@ function keyPressed() {
     // Player 1
     if(keyCode == LEFT_ARROW) {
         player1.changeDirection(-1);
-        console.log("Move Left");
     } else if (keyCode == RIGHT_ARROW) {
         player1.changeDirection(1);
-        console.log("Move Right");
     }
     // Player 2
     if(keyCode == 65) {
