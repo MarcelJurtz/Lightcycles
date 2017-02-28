@@ -2,7 +2,7 @@ var windowWidth;
 var windowHeight;
 
 var defaultDirection = 0;
-var defaultLength = 10;
+var defaultLength = 100;
 
 var player1;
 var player2;
@@ -13,7 +13,7 @@ function setup() {
   windowHeight = window.innerHeight;
   windowWidth = window.innerWidth;
   bgColor = color(22,22,24);
-  frameRate(10);
+  frameRate(30);
 
   createCanvas(windowWidth,windowHeight);
   background(bgColor);
@@ -52,10 +52,8 @@ function player(color, xPos, yPos, length, direction) {
   this.thickness = 5;
 
   this.tail = [];
+  this.living = true;
 
-  //stroke(color);
-  //fill(color);
-  //rect(xPos,yPos, 5, 5);
   for(var i = 0; i < this.length; i++) {
     this.tail.push(createVector(this.xPos, this.yPos));
   }
@@ -66,6 +64,7 @@ function player(color, xPos, yPos, length, direction) {
     if(this.direction < 0) this.direction = 3;
   }
 
+  // Calculate Movement
   this.move = function() {
     switch(this.direction) {
       case 0:
@@ -88,23 +87,33 @@ function player(color, xPos, yPos, length, direction) {
         this.xSpeed = 0;
         this.ySpeed = 0;
     }
-    this.xPos += this.xSpeed * this.thickness;
-    this.yPos += this.ySpeed * this.thickness;
+    if(this.tail[this.tail.length -1].x > 0 && this.tail[this.tail.length -1].x < windowWidth - this.thickness &&
+      this.tail[this.tail.length -1].y > 0 && this.tail[this.tail.length -1].y < windowHeight - this.thickness) {
+      this.xPos += this.xSpeed * this.thickness;
+      this.yPos += this.ySpeed * this.thickness;
+    } else {
+      this.living = false;
+    }
   }
-  this.show = function() {
-    for(var i = 0; i < this.tail.length; i++) {
-      this.tail[i] = this.tail[i+1];
-    }
-    this.tail[this.tail.length-1] = createVector(this.xPos, this.yPos);
 
-    stroke(this.color);
-    fill(this.color);
-    for(var i = 0; i < this.tail.length; i++) {
-      rect(this.tail[i].x, this.tail[i].y, this.thickness, this.thickness);
-    }
+  // Display Tail
+  this.show = function() {
+    if(this.living) {
+      for(var i = 0; i < this.tail.length; i++) {
+        this.tail[i] = this.tail[i+1];
+      }
+      this.tail[this.tail.length-1] = createVector(this.xPos, this.yPos);
+}
+      stroke(this.color);
+      fill(this.color);
+      for(var i = 0; i < this.tail.length; i++) {
+        rect(this.tail[i].x, this.tail[i].y, this.thickness, this.thickness);
+      }
+
   }
 }
 
+// Key-Presses for both players
 function keyPressed() {
     // Player 1
     if(keyCode == LEFT_ARROW) {
