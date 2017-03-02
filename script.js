@@ -1,9 +1,6 @@
 var windowWidth;
 var windowHeight;
 
-var defaultDirection = 0;
-var defaultLength = 100;
-
 var player1;
 var player2;
 
@@ -18,8 +15,8 @@ function setup() {
   createCanvas(windowWidth,windowHeight);
   background(bgColor);
 
-  player1 = new player("Player 1", color(255,0,102), windowWidth / 3, windowHeight / 2, defaultLength, defaultDirection);
-  player2 = new player("Player 2", color(127,255,0), (windowWidth / 3) * 2, windowHeight / 2, defaultLength, defaultDirection);
+  player1 = new player("Player 1", color(255,0,102), windowWidth / 3, windowHeight / 2, defaultDirection);
+  player2 = new player("Player 2", color(127,255,0), (windowWidth / 3) * 2, windowHeight / 2, defaultDirection);
 }
 
 function draw() {

@@ -1,4 +1,14 @@
-function player(name, color, xPos, yPos, length, direction) {
+var defaultLength = 200;
+var defaultDirection = 0;
+var defaultThickness = 5;
+// Default multiplier while boosting
+var defaultBoostFactorEnabled = 3;
+var defaultBoostFactorDisabled = 1;
+// Default boosting-length (frames)
+var defaultBoostFrames = 50;
+var defaultBoostFramesStart = 0;
+
+function player(name, color, xPos, yPos, direction) {
   // Directions:
   // 0 top
   // 1 right
@@ -7,8 +17,8 @@ function player(name, color, xPos, yPos, length, direction) {
 
   this.name = name;
 
-  this.direction = direction;
-  this.length = length;
+  this.direction = defaultDirection;
+  this.length = defaultLength;
 
 
   this.initX = xPos;
@@ -24,15 +34,12 @@ function player(name, color, xPos, yPos, length, direction) {
 
   // Booster
   // Default multiplier
-  this.boostFactor = 1;
+  this.boostFactor = defaultBoostFactorDisabled;
   // Frames left to boost
-  this.boostFrames = 0;
-  // Default multiplier while boosting
-  this.defaultBoostFactor = 5;
-  // Default boosting-length (frames)
-  this.defaultBoostFrames = 50;
+  this.boostFrames = defaultBoostFramesStart;
 
-  this.thickness = 5;
+
+  this.thickness = defaultThickness;
 
   this.tail = [];
   this.living = true;
@@ -72,14 +79,12 @@ function player(name, color, xPos, yPos, length, direction) {
     }
 
     // Check boost
-    if(this.boostFrames > 0) {
+    if(this.boostFrames > defaultBoostFramesStart) {
       this.boostFrames--;
     } else {
       // Reset Boost after given amount of Frames
-      this.boost = 1;
+      this.boost = defaultBoostFactorDisabled;
     }
-
-    console.log(this.boostFrames + " Frames remaining");
 
     // Wall Collision
     if(this.tail[this.tail.length -1].x > 0 && this.tail[this.tail.length -1].x < windowWidth - this.thickness &&
@@ -115,8 +120,8 @@ function player(name, color, xPos, yPos, length, direction) {
   }
 
   this.enableBoost = function() {
-    this.boost = this.defaultBoostFactor;
-    this.boostFrames = this.defaultBoostFrames;
+    this.boost = defaultBoostFactorEnabled;
+    this.boostFrames = defaultBoostFrames;
   }
 
   this.dies = function() {
