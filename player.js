@@ -22,6 +22,16 @@ function player(name, color, xPos, yPos, length, direction) {
   this.xSpeed = 0;
   this.ySpeed = 0;
 
+  // Booster
+  // Default multiplier
+  this.boostFactor = 1;
+  // Frames left to boost
+  this.boostFrames = 0;
+  // Default multiplier while boosting
+  this.defaultBoostFactor = 5;
+  // Default boosting-length (frames)
+  this.defaultBoostFrames = 50;
+
   this.thickness = 5;
 
   this.tail = [];
@@ -61,11 +71,21 @@ function player(name, color, xPos, yPos, length, direction) {
         this.ySpeed = 0;
     }
 
+    // Check boost
+    if(this.boostFrames > 0) {
+      this.boostFrames--;
+    } else {
+      // Reset Boost after given amount of Frames
+      this.boost = 1;
+    }
+
+    console.log(this.boostFrames + " Frames remaining");
+
     // Wall Collision
     if(this.tail[this.tail.length -1].x > 0 && this.tail[this.tail.length -1].x < windowWidth - this.thickness &&
       this.tail[this.tail.length -1].y > 0 && this.tail[this.tail.length -1].y < windowHeight - this.thickness) {
-      this.xPos += this.xSpeed * this.thickness;
-      this.yPos += this.ySpeed * this.thickness;
+      this.xPos += this.xSpeed * this.thickness * this.boost;
+      this.yPos += this.ySpeed * this.thickness * this.boost;
     } else {
       if(this.name == player1.name) player2.win;
       else player1.win;
@@ -92,6 +112,11 @@ function player(name, color, xPos, yPos, length, direction) {
     if(player2.dies() || player2.crashesInto(player1)) {
       player1.win();
     }
+  }
+
+  this.enableBoost = function() {
+    this.boost = this.defaultBoostFactor;
+    this.boostFrames = this.defaultBoostFrames;
   }
 
   this.dies = function() {

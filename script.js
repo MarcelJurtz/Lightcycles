@@ -45,5 +45,14 @@ function keyPressed() {
     } else if(keyCode == 83) {
       player2.changeDirection(1);
     }
+
+    // Space
+    if(keyCode == 32) {
+      player2.enableBoost();
+    }
+
+    if(keyCode == 13) {
+      player1.enableBoost();
+    }
     return 0;
 }
